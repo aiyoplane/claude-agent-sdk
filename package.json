@@ -1,0 +1,48 @@
+{
+  "name": "@aiyoplane/claude-agent-sdk",
+  "version": "1.0.0",
+  "description": "AEAP Composition Boundary Adapter for the Claude Agent SDK. Thin wrapper that attaches the Runtime Decision Point to agent tool invocations — especially useful for coding agents.",
+  "keywords": [
+    "aiyo",
+    "aiyoplane",
+    "aeap",
+    "claude",
+    "claude-agent-sdk",
+    "anthropic",
+    "authorization",
+    "runtime-decision-point",
+    "rdp",
+    "execution-receipt",
+    "composition-boundary",
+    "coding-agents"
+  ],
+  "author": {
+    "name": "Aiyoplane, Inc.",
+    "email": "rashon@aiyoplane.com",
+    "url": "https://aiyoplane.com"
+  },
+  "license": "Apache-2.0",
+  "type": "module",
+  "main": "src/index.js",
+  "exports": {
+    ".": { "import": "./src/index.js" }
+  },
+  "files": ["src/", "README.md", "LICENSE", "NOTICE"],
+  "engines": { "node": ">=18.0.0" },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/aiyoplane/claude-agent-sdk.git"
+  },
+  "bugs": { "url": "https://github.com/aiyoplane/claude-agent-sdk/issues" },
+  "homepage": "https://aiyoplane.com",
+  "scripts": {
+    "test": "node --test",
+    "demo": "node examples/minimal.js"
+  },
+  "dependencies": {
+    "@aiyoplane/mcp-authz": "^1.0.0"
+  },
+  "peerDependencies": {
+    "@anthropic-ai/claude-agent-sdk": ">=0.1.0"
+  }
+}
