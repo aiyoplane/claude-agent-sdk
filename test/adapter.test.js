@@ -13,13 +13,13 @@ import {
 
 function makeAuthz(rules) {
   return createAiyoMcpAuthz({
-    rdp: createLocalRdp({ policy: { rules } }),
-    toolConfig: { write_file: { aiyoGated: true, action: { type: 'file_write' } } },
+    rdp: createLocalRdp({ policy: { default_effect: 'deny', rules } }),
+    toolConfig: { write_file: { aiyo_gated: true, action: { type: 'file_write' } } },
   });
 }
 
 test('wrapToolHandler ALLOW runs the handler', async () => {
-  const authz = makeAuthz([{ action_type: 'file_write', effect: 'allow' }]);
+  const authz = makeAuthz([{ match: { action_type: 'file_write' }, effect: 'allow' }]);
   const gated = wrapToolHandler(
     async ({ path, content }) => `Wrote ${content.length} bytes to ${path}`,
     { authz, toolName: 'write_file', intentBuilder: ({ path }) => ({ type: 'file_write', path }) }
@@ -29,7 +29,7 @@ test('wrapToolHandler ALLOW runs the handler', async () => {
 });
 
 test('wrapToolHandler BLOCK prevents execution', async () => {
-  const authz = makeAuthz([{ action_type: 'file_write', effect: 'block' }]);
+  const authz = makeAuthz([{ match: { action_type: 'file_write' }, effect: 'deny' }]);
   const gated = wrapToolHandler(
     async () => 'should not run',
     { authz, toolName: 'write_file', intentBuilder: () => ({ type: 'file_write' }) }
@@ -41,7 +41,7 @@ test('wrapToolHandler BLOCK prevents execution', async () => {
 });
 
 test('wrapToolHandler ESCALATE raises', async () => {
-  const authz = makeAuthz([{ action_type: 'file_write', effect: 'escalate' }]);
+  const authz = makeAuthz([{ match: { action_type: 'file_write' }, effect: 'escalate' }]);
   const gated = wrapToolHandler(
     async () => 'should not run',
     { authz, toolName: 'write_file', intentBuilder: () => ({ type: 'file_write' }) }
@@ -53,7 +53,7 @@ test('wrapToolHandler ESCALATE raises', async () => {
 });
 
 test('wrapToolHandler broken intentBuilder blocks', async () => {
-  const authz = makeAuthz([{ action_type: 'file_write', effect: 'allow' }]);
+  const authz = makeAuthz([{ match: { action_type: 'file_write' }, effect: 'allow' }]);
   const gated = wrapToolHandler(
     async () => 'ok',
     {
@@ -69,7 +69,7 @@ test('wrapToolHandler broken intentBuilder blocks', async () => {
 });
 
 test('wrapToolHandler non-object intent blocks', async () => {
-  const authz = makeAuthz([{ action_type: 'file_write', effect: 'allow' }]);
+  const authz = makeAuthz([{ match: { action_type: 'file_write' }, effect: 'allow' }]);
   const gated = wrapToolHandler(
     async () => 'ok',
     { authz, toolName: 'write_file', intentBuilder: () => 'not an object' }
@@ -81,7 +81,7 @@ test('wrapToolHandler non-object intent blocks', async () => {
 });
 
 test('wrapToolHandler non-function raises AdapterConfigError', () => {
-  const authz = makeAuthz([{ action_type: 'file_write', effect: 'allow' }]);
+  const authz = makeAuthz([{ match: { action_type: 'file_write' }, effect: 'allow' }]);
   assert.throws(
     () => wrapToolHandler('not a fn', {
       authz, toolName: 'write_file', intentBuilder: () => ({ type: 'file_write' }),
@@ -91,7 +91,7 @@ test('wrapToolHandler non-function raises AdapterConfigError', () => {
 });
 
 test('wrapTool wraps full tool definition', async () => {
-  const authz = makeAuthz([{ action_type: 'file_write', effect: 'allow' }]);
+  const authz = makeAuthz([{ match: { action_type: 'file_write' }, effect: 'allow' }]);
   const toolDef = {
     name: 'write_file',
     description: 'Write a file.',

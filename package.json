@@ -1,6 +1,6 @@
 {
   "name": "@aiyoplane/claude-agent-sdk",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "AEAP Composition Boundary Adapter for the Claude Agent SDK. Thin wrapper that attaches the Runtime Decision Point to agent tool invocations — especially useful for coding agents.",
   "keywords": [
     "aiyo",
